@@ -1,1 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Questrial&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Source Sans 3", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+
+  /* active-state lighter orange */
+  --color-orange-200: oklch(0.96 0.02 53.19);
+  /* active-state medium-dark orange */
+  --color-orange-600: oklch(0.65 0.21 37.7);
+  /* border color medium gray */
+  --color-gray-400: oklch(0.93 0 0);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-neutral-100);
+    min-height: 100vh;
+  }
+}
