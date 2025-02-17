@@ -1,4 +1,4 @@
-type ClassValue = string | undefined | null | ClassValue[];
+type ClassValue = string | undefined | boolean | null | ClassValue[];
 
 // filters classes, allows for handling conditional classes
 export function filterClasses(...classes: ClassValue[]) {

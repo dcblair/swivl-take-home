@@ -9,7 +9,8 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <Routes>
         <Route element={<Home />}>
-          <Route path="/details" element={<span>Details</span>} />
+          {/* Treating Details tab as index */}
+          <Route index element={<span>Details</span>} />
           <Route path="/cortex" element={<span>Cortex</span>} />
           <Route path="/escalations" element={<span>Escalations</span>} />
           <Route path="/sequences" element={<span>Sequences</span>} />
