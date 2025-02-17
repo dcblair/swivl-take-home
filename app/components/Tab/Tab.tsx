@@ -5,10 +5,9 @@ import { NavLink, NavLinkProps } from "react-router";
 interface TabProps extends NavLinkProps {
   classNames?: string;
   children: ReactNode;
-  to: string;
 }
 
-const BaseTab = ({ classNames = "", children, to, ...rest }: TabProps) => {
+const BaseTab = ({ classNames = "", children, ...rest }: TabProps) => {
   return (
     <NavLink
       /**
@@ -23,7 +22,6 @@ const BaseTab = ({ classNames = "", children, to, ...rest }: TabProps) => {
           classNames
         )
       }
-      to={to}
       {...rest}
     >
       {children}
