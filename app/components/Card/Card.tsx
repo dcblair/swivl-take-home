@@ -10,7 +10,7 @@ const BaseCard = ({ children }: CardProps) => {
   return (
     <div
       className={filterClasses(
-        "shadow-md bg-white py-6 px-8 rounded-md w-full"
+        "shadow-md bg-white pt-4 pb-3 px-6 rounded-md w-full"
       )}
     >
       {children}

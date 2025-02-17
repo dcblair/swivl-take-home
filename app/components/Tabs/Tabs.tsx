@@ -9,7 +9,7 @@ interface TabProps {
 }
 
 interface TabsProps extends HTMLAttributes<HTMLElement> {
-  classNames?: Partial<string>;
+  classNames?: string;
   tabs: TabProps[];
 }
 
@@ -17,7 +17,7 @@ const BaseTabs = ({ classNames, tabs, ...rest }: TabsProps) => {
   return (
     <nav
       className={filterClasses(
-        "bg-white border-b-gray-400 border-b-4 py-4 space-x-4 px-8 flex w-full",
+        "bg-white border-b-neutral-350 border-b-2 py-3 space-x-4 px-4 flex w-full",
         classNames
       )}
       {...rest}
