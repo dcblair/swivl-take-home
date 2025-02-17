@@ -6,11 +6,12 @@ interface CardProps {
   classNames?: string;
 }
 
-const BaseCard = ({ children }: CardProps) => {
+const BaseCard = ({ classNames = "", children }: CardProps) => {
   return (
     <div
       className={filterClasses(
-        "shadow-md bg-white pt-4 pb-3 px-6 rounded-md w-full"
+        "shadow-md bg-white pt-4 pb-3 px-6 rounded-md w-full",
+        classNames
       )}
     >
       {children}
