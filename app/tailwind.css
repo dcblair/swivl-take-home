@@ -6,7 +6,7 @@
   --font-poppins: "Poppins", sans-serif;
 
   /* active-state lighter orange */
-  --color-orange-200: oklch(0.96 0.02 53.19);
+  --color-orange-150: oklch(0.96 0.02 53.19);
   /* active-state medium-dark orange */
   --color-orange-600: oklch(0.65 0.21 37.7);
   /* border color medium gray */
