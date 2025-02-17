@@ -7,7 +7,7 @@ function Home() {
     { name: "Cortex", href: "/cortex" },
     { name: "Escalations", href: "/escalations" },
     { name: "Sequences", href: "/sequences" },
-    { name: "Locations and Variables", href: "/locations-variables" },
+    { name: "Locations and Variables", href: "/locations-and-variables" },
     { name: "spot.is", href: "/spot-is" },
   ];
 

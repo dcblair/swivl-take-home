@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./tailwind.css";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Home from "@/pages/home";
+import LocationsAndVariables from "@/pages/locations-and-variables";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -15,8 +16,8 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/escalations" element={<span>Escalations</span>} />
           <Route path="/sequences" element={<span>Sequences</span>} />
           <Route
-            path="/locations-variables"
-            element={<span>Locations and Variables</span>}
+            path="/locations-and-variables"
+            element={<LocationsAndVariables />}
           />
           <Route path="/spot-is" element={<span>spot.is</span>} />
         </Route>
