@@ -1,34 +1,28 @@
 import { filterClasses } from "@/utils/filterClasses";
-import { type CSSProperties, memo, type ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { NavLink, NavLinkProps } from "react-router";
 
 interface TabProps extends NavLinkProps {
-  active?: boolean;
   classNames?: string;
-  styles?: Partial<CSSProperties>;
   children: ReactNode;
   to: string;
 }
 
-const BaseTab = ({
-  active = false,
-  classNames = "",
-  children,
-  styles = {},
-  to,
-  ...rest
-}: TabProps) => {
-  // todo: active state, disabled state
-
+const BaseTab = ({ classNames = "", children, to, ...rest }: TabProps) => {
   return (
     <NavLink
-      className={filterClasses(
-        "text-black tracking-wide text-xl px-4 py-2.5 rounded-lg w-fit",
-        active && "bg-orange-150 text-orange-500 font-semibold",
-        "aria-disabled:text-neutral-400 aria-disabled:bg-neutral-200 pointer-events-none",
-        classNames
-      )}
-      style={styles}
+      /**
+       * From docs: - Automatically applies `aria-current="page"` to the link when the link is active.
+       * See [`aria-current`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-current) on MDN.
+       *  */
+      className={({ isActive }) =>
+        filterClasses(
+          "text-black tracking-wide text-xl px-4 py-2.5 rounded-lg w-full",
+          isActive && "bg-orange-150 text-orange-500 font-semibold",
+          "aria-disabled:text-neutral-400 aria-disabled:bg-neutral-200 pointer-events-none",
+          classNames
+        )
+      }
       to={to}
       {...rest}
     >
