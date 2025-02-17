@@ -16,9 +16,11 @@ const BaseTab = ({ classNames = "", children, ...rest }: TabProps) => {
        *  */
       className={({ isActive }) =>
         filterClasses(
-          "text-black tracking-wide text-xl px-4 py-2.5 rounded-lg w-full",
+          "text-black tracking-wide text-xl px-4 py-2.5 transition-colors duration-300 outline-0 outline-orange-500 ease-in-out rounded-lg",
           isActive && "bg-orange-150 text-orange-500 font-semibold",
-          "aria-disabled:text-neutral-400 aria-disabled:bg-neutral-200 pointer-events-none",
+          "focus-visible:outline-2",
+          "hover:text-orange-600",
+          "aria-disabled:text-neutral-400 aria-disabled:bg-neutral-200 aria-disabled:pointer-events-none",
           classNames
         )
       }
