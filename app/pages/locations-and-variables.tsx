@@ -1,7 +1,10 @@
 import { Button, Card } from "@/components";
+import { useLocationStore } from "@/stores/locationStore";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
+// todo: abstract into api, along with queries
 interface Variable {
   id: number;
   orgId: number;
@@ -33,6 +36,7 @@ const variableKeys = [
 type VariableKey = (typeof variableKeys)[number];
 
 function LocationsAndVariables() {
+  const { locationState, setLocationState } = useLocationStore();
   const navigate = useNavigate();
 
   const {
@@ -64,6 +68,7 @@ function LocationsAndVariables() {
     data: locations,
     error: locationsError,
     isPending: areLocationsLoading,
+    isSuccess,
   } = useQuery({
     queryKey: ["locationsData"],
     queryFn: async () => {
@@ -74,15 +79,17 @@ function LocationsAndVariables() {
 
       // todo: fix typing
       const parsedLocations: AssembledLocation[] = locations?.map(
-        (location) => {
-          const variablesObj = {};
+        ({ id, orgId }) => {
+          const variablesObj = {
+            id: id,
+            orgId: orgId,
+          };
           variableKeys?.forEach((variableKey: VariableKey) => {
             // look for variable based on location id first, if not found, find based on orgId
             const foundVariable =
-              variables?.[location.id]?.find(
-                (variable) => variable.key === variableKey
-              )?.value ||
-              variables?.[location.orgId]?.find(
+              variables?.[id]?.find((variable) => variable.key === variableKey)
+                ?.value ||
+              variables?.[orgId]?.find(
                 (variable) => variable.key === variableKey
               )?.value ||
               null;
@@ -99,6 +106,20 @@ function LocationsAndVariables() {
     // set locations as dependent on variables
     enabled: !!variables,
   });
+
+  // initialize locations store state
+  useEffect(() => {
+    if (!locations) return;
+
+    const initialLocationState = locations.map(({ id }) => {
+      return {
+        id: id,
+        isShowingVariables: false,
+      };
+    });
+
+    setLocationState(initialLocationState);
+  }, [isSuccess, locations, setLocationState]);
 
   /**
    * locations and variables logic
@@ -147,22 +168,26 @@ function LocationsAndVariables() {
           }: AssembledLocation) => (
             <Card key={id}>
               <div>
-                {/* variable key: name */}
                 <h2 className="font-poppins font-semibold">{name}</h2>
-                {/* variable key: address */}
                 <p>{address}</p>
-                {/* variable key: number */}
                 <p>{phoneNumber}</p>
                 <div className="mt-1">
                   {/* todo: leverage id to toggle isShowingVariables */}
                   <Button
                     onClick={() => {
-                      console.log(id);
+                      if (locationState)
+                        setLocationState({
+                          id: id,
+                          isShowingVariables:
+                            !locationState[id].isShowingVariables,
+                        });
                     }}
                     variant="link"
                   >
-                    {/* todo: add conditional logic for text rendering */}
-                    Show/hide Variables
+                    {locationState && locationState[id]?.isShowingVariables
+                      ? "Hide"
+                      : "Show"}{" "}
+                    Variables
                   </Button>
                   {
                     <div className="mt-2 grid auto-cols-auto">
