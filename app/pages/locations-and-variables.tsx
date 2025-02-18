@@ -60,13 +60,11 @@ function LocationsAndVariables() {
   // todo: flesh out error state
   if (locationsError || variablesError) {
     return (
-      <div>
-        <p>
-          Something went wrong.{" "}
-          <Button variant="link" onClick={() => navigate(0)}>
-            Click here to refresh.
-          </Button>
-        </p>
+      <div className="flex flex-col items-center pt-28">
+        <p className="text-lg">Something went wrong. </p>
+        <Button variant="link" onClick={() => navigate(0)}>
+          Click here to refresh.
+        </Button>
       </div>
     );
   }

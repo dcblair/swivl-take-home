@@ -32,6 +32,11 @@ export const fetchLocations = async (
   const locationsRes = await fetch(
     `${import.meta.env.VITE_SWIVL_BASE_URL}/locations`
   );
+
+  if (!locationsRes.ok) {
+    throw new Error("Error fetching locations");
+  }
+
   const locations: Location[] = await locationsRes.json();
 
   const assembledLocations = locations?.map(({ id, orgId }) => {
