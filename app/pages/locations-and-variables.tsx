@@ -1,3 +1,4 @@
+import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 
 function LocationsAndVariables() {
@@ -20,9 +21,7 @@ function LocationsAndVariables() {
           <p>1337 Kevin Mitnick Rd, Warrendale, PA</p>
           <p>212-555-1234</p>
           <div className="mt-1">
-            <button className="underline" onClick={() => {}}>
-              Show Variables
-            </button>
+            <Button onClick={() => {}}>Show Variables</Button>
             {
               <div className="mt-2 grid auto-cols-auto">
                 {/* variables here */}
@@ -37,9 +36,9 @@ function LocationsAndVariables() {
           <h2 className="font-poppins">Sickvile</h2>
           <p>1337 Kevin Mitnick Rd, Warrendale, PA</p>
           <p>212-555-1234</p>
-          <button className="underline" onClick={() => {}}>
+          <Button onClick={() => {}} variant="link">
             Show Variables
-          </button>
+          </Button>
         </div>
       </Card>
     </div>
