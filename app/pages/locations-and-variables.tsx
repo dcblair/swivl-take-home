@@ -2,6 +2,36 @@ import { Button, Card } from "@/components";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 
+interface Variable {
+  id: number;
+  orgId: number;
+  locationId: number | null;
+  key: string;
+  value: string;
+}
+
+interface Location {
+  id: number;
+  orgId: number;
+}
+
+interface AssembledLocation extends Location {
+  address: string;
+  brandName: string;
+  name: string;
+  phoneNumber: string;
+  storeHours: string;
+}
+
+const variableKeys = [
+  "Address",
+  "BrandName",
+  "Name",
+  "PhoneNumber",
+  "StoreHours",
+];
+type VariableKey = (typeof variableKeys)[number];
+
 function LocationsAndVariables() {
   const navigate = useNavigate();
 
@@ -16,7 +46,17 @@ function LocationsAndVariables() {
         `${import.meta.env.VITE_SWIVL_BASE_URL}/variables`
       );
       const variables = await variableRes.json();
-      return variables;
+
+      // group variables by locationId || orgId
+      const groupedVariables =
+        variables?.length > 0
+          ? Object.groupBy(
+              variables,
+              (variable: Variable) => variable?.locationId || variable?.orgId
+            )
+          : [];
+
+      return groupedVariables;
     },
   });
 
@@ -30,14 +70,52 @@ function LocationsAndVariables() {
       const locationsRes = await fetch(
         `${import.meta.env.VITE_SWIVL_BASE_URL}/locations`
       );
-      const locationss = await locationsRes.json();
-      return locationss;
+      const locations: Location[] = await locationsRes.json();
+
+      // todo: fix typing
+      const parsedLocations: AssembledLocation[] = locations?.map(
+        (location) => {
+          const variablesObj = {};
+          variableKeys?.forEach((variableKey: VariableKey) => {
+            // look for variable based on location id first, if not found, find based on orgId
+            const foundVariable =
+              variables?.[location.id]?.find(
+                (variable) => variable.key === variableKey
+              )?.value ||
+              variables?.[location.orgId]?.find(
+                (variable) => variable.key === variableKey
+              )?.value ||
+              null;
+
+            const lowerCasedVariableKey =
+              variableKey.charAt(0).toLocaleLowerCase() + variableKey.slice(1);
+            variablesObj[lowerCasedVariableKey] = foundVariable;
+          });
+          return variablesObj;
+        }
+      );
+      return parsedLocations;
     },
+    // set locations as dependent on variables
+    enabled: !!variables,
   });
-  // 3 locations under 1 org
-  //
-  // keys: name, address, phone number
-  // grab value of key to display
+
+  /**
+   * locations and variables logic
+   * locations:
+   * - locations exist at org level AND location level
+   * - 3 locations under 1 org, 4
+   *
+   * display locations and variables
+   * indicate whether variable is inherited from org or defined at location level
+   *
+   * keys: name, address, phone number
+   * grab value of key to display
+   *
+   * if ("locationId" in variable), overrides org-level variable, else inherits org-level variable
+   *
+   * consider how to make this modular / flexible
+   *  */
 
   // todo: flesh out error state
   if (locationsError || variablesError) {
@@ -53,38 +131,52 @@ function LocationsAndVariables() {
     );
   }
 
-  console.log(variables, "variables", locations, "locations");
-
   return (
     <div className="flex flex-col space-y-6">
       {/* todo: flesh out loading state */}
       {areLocationsLoading || (areVariablesLoading && "loading")}
-      <Card>
-        <div>
-          <h2 className="font-poppins">Sickvile</h2>
-          <p>1337 Kevin Mitnick Rd, Warrendale, PA</p>
-          <p>212-555-1234</p>
-          <div className="mt-1">
-            <Button onClick={() => {}}>Show Variables</Button>
-            {
-              <div className="mt-2 grid auto-cols-auto">
-                {/* variables here */}
+      {Array.isArray(locations) &&
+        locations.map(
+          ({
+            address,
+            brandName,
+            id,
+            name,
+            phoneNumber,
+            storeHours,
+          }: AssembledLocation) => (
+            <Card key={id}>
+              <div>
+                {/* variable key: name */}
+                <h2 className="font-poppins font-semibold">{name}</h2>
+                {/* variable key: address */}
+                <p>{address}</p>
+                {/* variable key: number */}
+                <p>{phoneNumber}</p>
+                <div className="mt-1">
+                  {/* todo: leverage id to toggle isShowingVariables */}
+                  <Button
+                    onClick={() => {
+                      console.log(id);
+                    }}
+                    variant="link"
+                  >
+                    {/* todo: add conditional logic for text rendering */}
+                    Show/hide Variables
+                  </Button>
+                  {
+                    <div className="mt-2 grid auto-cols-auto">
+                      {/* store hours */}
+                      <p>{storeHours}</p>
+                      {/* brand name */}
+                      <p>{brandName}</p>
+                    </div>
+                  }
+                </div>
               </div>
-            }
-          </div>
-        </div>
-      </Card>
-
-      <Card>
-        <div>
-          <h2 className="font-poppins">Sickvile</h2>
-          <p>1337 Kevin Mitnick Rd, Warrendale, PA</p>
-          <p>212-555-1234</p>
-          <Button onClick={() => {}} variant="link">
-            Show Variables
-          </Button>
-        </div>
-      </Card>
+            </Card>
+          )
+        )}
     </div>
   );
 }
