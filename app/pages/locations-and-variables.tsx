@@ -1,46 +1,113 @@
-import { Button } from "@/components/Button/Button";
-import { Card } from "@/components/Card/Card";
+import { fetchLocations, fetchVariables } from "@/api";
+import { Button, Card } from "@/components";
+import { useLocationStore } from "@/stores/locationStore";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 function LocationsAndVariables() {
-  /**
-   *  consider logic for showing variables
-   *  isshowing per location?
-   *  const [isShowing, setIsShowing] = useState({
-   *  location1: false,
-   *  location2: true,
-   *  location3: true
-   * })
-   *  additionally, do i want to persist this data so that variables will remain showing when users leave and return?
-   *  */
+  const { locationState, setLocationState } = useLocationStore();
+  const navigate = useNavigate();
+
+  const {
+    data: variables,
+    error: variablesError,
+    isPending: areVariablesLoading,
+  } = useQuery({
+    queryKey: ["variablesData"],
+    queryFn: fetchVariables,
+  });
+
+  const {
+    data: locations,
+    error: locationsError,
+    isPending: areLocationsLoading,
+    isSuccess,
+  } = useQuery({
+    queryKey: ["locationsData"],
+    queryFn: () => variables && fetchLocations(variables),
+    // set locations as dependent on variables
+    enabled: !!variables,
+  });
+
+  // initialize locations store state
+  // note: due to this logic, the show/hide state won't persist
+  useEffect(() => {
+    if (!locations) return;
+
+    const initialLocationState = locations.map(({ id }) => {
+      return {
+        id: id,
+        isShowingVariables: false,
+      };
+    });
+
+    setLocationState(initialLocationState);
+  }, [isSuccess, locations, setLocationState]);
+
+  const handleSetLocationState = (id: number) => {
+    if (!locationState) return;
+
+    const newLocationState = locationState.map((location) =>
+      location.id === id
+        ? { ...location, isShowingVariables: !location.isShowingVariables }
+        : location
+    );
+
+    setLocationState(newLocationState);
+  };
+
+  // todo: flesh out error state
+  if (locationsError || variablesError) {
+    return (
+      <div>
+        <p>
+          Something went wrong.{" "}
+          <Button variant="link" onClick={() => navigate(0)}>
+            Click here to refresh.
+          </Button>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col space-y-6">
-      <Card>
-        <div>
-          <h2 className="font-poppins">Sickvile</h2>
-          <p>1337 Kevin Mitnick Rd, Warrendale, PA</p>
-          <p>212-555-1234</p>
-          <div className="mt-1">
-            <Button onClick={() => {}}>Show Variables</Button>
-            {
-              <div className="mt-2 grid auto-cols-auto">
-                {/* variables here */}
+      {/* todo: flesh out loading state */}
+      {areLocationsLoading || (areVariablesLoading && "loading")}
+      {Array.isArray(locations) &&
+        locations.map(
+          (
+            { address, brandName, id, name, phoneNumber, storeHours },
+            index
+          ) => (
+            <Card key={id}>
+              <div>
+                <h2 className="font-poppins font-semibold">{name}</h2>
+                <p>{address}</p>
+                <p>{phoneNumber}</p>
+                <div className="mt-1">
+                  <Button
+                    onClick={() => handleSetLocationState(id)}
+                    variant="link"
+                  >
+                    {locationState && locationState[index]?.isShowingVariables
+                      ? "Hide"
+                      : "Show"}{" "}
+                    Variables
+                  </Button>
+                  {locationState &&
+                    locationState[index]?.isShowingVariables && (
+                      <div className="mt-2 grid auto-cols-auto">
+                        <p>{storeHours}</p>
+                        <p>{brandName}</p>
+                      </div>
+                    )}
+                </div>
               </div>
-            }
-          </div>
-        </div>
-      </Card>
-
-      <Card>
-        <div>
-          <h2 className="font-poppins">Sickvile</h2>
-          <p>1337 Kevin Mitnick Rd, Warrendale, PA</p>
-          <p>212-555-1234</p>
-          <Button onClick={() => {}} variant="link">
-            Show Variables
-          </Button>
-        </div>
-      </Card>
+            </Card>
+          )
+        )}
     </div>
   );
 }

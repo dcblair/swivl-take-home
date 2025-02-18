@@ -2,7 +2,7 @@
 
 Thank you for visiting my take home assignment.
 
-## Development
+## Setup and Development
 
 Clone the repo using SSH or HTTPS.
 After cloning the repo, make sure to install packages:
@@ -17,7 +17,13 @@ After installing dependencies, run STH locally:
 npm run dev
 ```
 
+Ensure env vars are set in a `.env`. Refer to `.env.example`.
+
 ## Features
+
+### Data fetching
+
+React Query with the fetch API are being used for data fetching.
 
 ### Routing
 
