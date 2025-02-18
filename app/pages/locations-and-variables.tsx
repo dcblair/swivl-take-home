@@ -121,6 +121,19 @@ function LocationsAndVariables() {
     setLocationState(initialLocationState);
   }, [isSuccess, locations, setLocationState]);
 
+  const handleSetLocationState = (id: number) => {
+    console.log(id, "id setlocation");
+    if (!locationState) return;
+
+    const newLocationState = locationState.map((location) =>
+      location.id === id
+        ? { ...location, isShowingVariables: !location.isShowingVariables }
+        : location
+    );
+
+    setLocationState(newLocationState);
+  };
+
   /**
    * locations and variables logic
    * locations:
@@ -158,14 +171,17 @@ function LocationsAndVariables() {
       {areLocationsLoading || (areVariablesLoading && "loading")}
       {Array.isArray(locations) &&
         locations.map(
-          ({
-            address,
-            brandName,
-            id,
-            name,
-            phoneNumber,
-            storeHours,
-          }: AssembledLocation) => (
+          (
+            {
+              address,
+              brandName,
+              id,
+              name,
+              phoneNumber,
+              storeHours,
+            }: AssembledLocation,
+            index
+          ) => (
             <Card key={id}>
               <div>
                 <h2 className="font-poppins font-semibold">{name}</h2>
@@ -174,29 +190,23 @@ function LocationsAndVariables() {
                 <div className="mt-1">
                   {/* todo: leverage id to toggle isShowingVariables */}
                   <Button
-                    onClick={() => {
-                      if (locationState)
-                        setLocationState({
-                          id: id,
-                          isShowingVariables:
-                            !locationState[id].isShowingVariables,
-                        });
-                    }}
+                    onClick={() => handleSetLocationState(id)}
                     variant="link"
                   >
-                    {locationState && locationState[id]?.isShowingVariables
+                    {locationState && locationState[index]?.isShowingVariables
                       ? "Hide"
                       : "Show"}{" "}
                     Variables
                   </Button>
-                  {
-                    <div className="mt-2 grid auto-cols-auto">
-                      {/* store hours */}
-                      <p>{storeHours}</p>
-                      {/* brand name */}
-                      <p>{brandName}</p>
-                    </div>
-                  }
+                  {locationState &&
+                    locationState[index]?.isShowingVariables && (
+                      <div className="mt-2 grid auto-cols-auto">
+                        {/* store hours */}
+                        <p>{storeHours}</p>
+                        {/* brand name */}
+                        <p>{brandName}</p>
+                      </div>
+                    )}
                 </div>
               </div>
             </Card>
