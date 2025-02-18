@@ -1,42 +1,9 @@
+import { fetchLocations, fetchVariables } from "@/api";
 import { Button, Card } from "@/components";
 import { useLocationStore } from "@/stores/locationStore";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-
-// todo: abstract into api, along with queries
-interface Variable {
-  id: number;
-  orgId: number;
-  locationId: number | null;
-  key: string;
-  value: string;
-}
-
-interface Location {
-  id: number;
-  orgId: number;
-}
-
-interface LocationVariables {
-  address: string;
-  brandName: string;
-  name: string;
-  phoneNumber: string;
-  storeHours: string;
-}
-
-type AssembledLocation = Location & LocationVariables;
-
-type VariableKey = keyof LocationVariables;
-
-const variableKeys = [
-  "Address",
-  "BrandName",
-  "Name",
-  "PhoneNumber",
-  "StoreHours",
-];
 
 function LocationsAndVariables() {
   const { locationState, setLocationState } = useLocationStore();
@@ -48,23 +15,7 @@ function LocationsAndVariables() {
     isPending: areVariablesLoading,
   } = useQuery({
     queryKey: ["variablesData"],
-    queryFn: async () => {
-      const variableRes = await fetch(
-        `${import.meta.env.VITE_SWIVL_BASE_URL}/variables`
-      );
-      const variables = await variableRes.json();
-
-      // group variables by locationId || orgId
-      const groupedVariables =
-        variables?.length > 0
-          ? Object.groupBy(
-              variables,
-              (variable: Variable) => variable?.locationId || variable?.orgId
-            )
-          : [];
-
-      return groupedVariables;
-    },
+    queryFn: fetchVariables,
   });
 
   const {
@@ -74,43 +25,13 @@ function LocationsAndVariables() {
     isSuccess,
   } = useQuery({
     queryKey: ["locationsData"],
-    queryFn: async () => {
-      const locationsRes = await fetch(
-        `${import.meta.env.VITE_SWIVL_BASE_URL}/locations`
-      );
-      const locations: Location[] = await locationsRes.json();
-
-      const assembledLocations = locations?.map(({ id, orgId }) => {
-        const variablesOject = variableKeys?.reduce((acc, variableKey) => {
-          // look for variable based on location id first, if not found, find based on orgId
-          const foundVariable =
-            variables?.[id]?.find((variable) => variable.key === variableKey)
-              ?.value ||
-            variables?.[orgId]?.find((variable) => variable.key === variableKey)
-              ?.value ||
-            "";
-
-          const lowerCasedVariableKey =
-            variableKey.charAt(0).toLocaleLowerCase() + variableKey.slice(1);
-
-          acc[lowerCasedVariableKey as VariableKey] = foundVariable;
-
-          return acc;
-        }, {} as LocationVariables);
-        return {
-          ...variablesOject,
-          id,
-          orgId,
-        };
-      });
-
-      return assembledLocations;
-    },
+    queryFn: () => variables && fetchLocations(variables),
     // set locations as dependent on variables
     enabled: !!variables,
   });
 
   // initialize locations store state
+  // note: due to this logic, the show/hide state won't persist
   useEffect(() => {
     if (!locations) return;
 
@@ -136,21 +57,6 @@ function LocationsAndVariables() {
     setLocationState(newLocationState);
   };
 
-  /**
-   * locations and variables logic
-   * locations:
-   * - locations exist at org level AND location level
-   * - 3 locations under 1 org, 4
-   *
-   * display locations and variables
-   * indicate whether variable is inherited from org or defined at location level
-   *
-   * keys: name, address, phone number
-   * grab value of key to display
-   *
-   * if ("locationId" in variable), overrides org-level variable, else inherits org-level variable
-   *  */
-
   // todo: flesh out error state
   if (locationsError || variablesError) {
     return (
@@ -172,14 +78,7 @@ function LocationsAndVariables() {
       {Array.isArray(locations) &&
         locations.map(
           (
-            {
-              address,
-              brandName,
-              id,
-              name,
-              phoneNumber,
-              storeHours,
-            }: AssembledLocation,
+            { address, brandName, id, name, phoneNumber, storeHours },
             index
           ) => (
             <Card key={id}>
@@ -188,7 +87,6 @@ function LocationsAndVariables() {
                 <p>{address}</p>
                 <p>{phoneNumber}</p>
                 <div className="mt-1">
-                  {/* todo: leverage id to toggle isShowingVariables */}
                   <Button
                     onClick={() => handleSetLocationState(id)}
                     variant="link"
@@ -201,9 +99,7 @@ function LocationsAndVariables() {
                   {locationState &&
                     locationState[index]?.isShowingVariables && (
                       <div className="mt-2 grid auto-cols-auto">
-                        {/* store hours */}
                         <p>{storeHours}</p>
-                        {/* brand name */}
                         <p>{brandName}</p>
                       </div>
                     )}
