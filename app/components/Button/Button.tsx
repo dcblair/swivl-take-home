@@ -36,7 +36,7 @@ const BaseButton = ({
   return (
     <button
       className={filterClasses(
-        "transition duration-300 ease-in-out",
+        "transition duration-300 ease-in-out cursor-pointer",
         variants[variant],
         classNames
       )}
