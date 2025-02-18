@@ -12,7 +12,6 @@ interface LocationStore {
 
 export const useLocationStore = create<LocationStore>((set) => ({
   locationState: [],
-  // todo: update with correct logic
   setLocationState: (newLocationState) =>
     set(() => ({ locationState: newLocationState })),
 }));
