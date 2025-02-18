@@ -8,7 +8,7 @@ const variants = {
     "hover:bg-orange-200 drop-shadow-md",
   ],
   link: [
-    "underline",
+    "underline py-1.5",
     "focus-visible:outline-neutral-600 focus-visible:outline-offset-4",
     "disabled:text-neutral-350",
     "hover:text-neutral-500",

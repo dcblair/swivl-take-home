@@ -86,8 +86,8 @@ function LocationsAndVariables() {
               isOpen={locationState && locationState[index]?.isShowingVariables}
               hiddenContent={
                 <div className="mt-2">
-                  <p>{storeHours}</p>
-                  <p>{brandName}</p>
+                  <p>Store Hours: {storeHours}</p>
+                  <p>Brand Name: {brandName}</p>
                 </div>
               }
             >
@@ -95,17 +95,15 @@ function LocationsAndVariables() {
                 <h2 className="font-poppins font-semibold">{name}</h2>
                 <p>{address}</p>
                 <p>{phoneNumber}</p>
-                <div className="mt-1">
-                  <Button
-                    onClick={() => handleSetLocationState(id)}
-                    variant="link"
-                  >
-                    {locationState && locationState[index]?.isShowingVariables
-                      ? "Hide"
-                      : "Show"}{" "}
-                    Variables
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => handleSetLocationState(id)}
+                  variant="link"
+                >
+                  {locationState && locationState[index]?.isShowingVariables
+                    ? "Hide"
+                    : "Show"}{" "}
+                  Variables
+                </Button>
               </div>
             </Card>
           )
