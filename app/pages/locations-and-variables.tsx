@@ -18,13 +18,17 @@ interface Location {
   orgId: number;
 }
 
-interface AssembledLocation extends Location {
+interface LocationVariables {
   address: string;
   brandName: string;
   name: string;
   phoneNumber: string;
   storeHours: string;
 }
+
+type AssembledLocation = Location & LocationVariables;
+
+type VariableKey = keyof LocationVariables;
 
 const variableKeys = [
   "Address",
@@ -33,7 +37,6 @@ const variableKeys = [
   "PhoneNumber",
   "StoreHours",
 ];
-type VariableKey = (typeof variableKeys)[number];
 
 function LocationsAndVariables() {
   const { locationState, setLocationState } = useLocationStore();
@@ -77,31 +80,31 @@ function LocationsAndVariables() {
       );
       const locations: Location[] = await locationsRes.json();
 
-      // todo: fix typing
-      const parsedLocations: AssembledLocation[] = locations?.map(
-        ({ id, orgId }) => {
-          const variablesObj = {
-            id: id,
-            orgId: orgId,
-          };
-          variableKeys?.forEach((variableKey: VariableKey) => {
-            // look for variable based on location id first, if not found, find based on orgId
-            const foundVariable =
-              variables?.[id]?.find((variable) => variable.key === variableKey)
-                ?.value ||
-              variables?.[orgId]?.find(
-                (variable) => variable.key === variableKey
-              )?.value ||
-              null;
+      const assembledLocations = locations?.map(({ id, orgId }) => {
+        const variablesOject = variableKeys?.reduce((acc, variableKey) => {
+          // look for variable based on location id first, if not found, find based on orgId
+          const foundVariable =
+            variables?.[id]?.find((variable) => variable.key === variableKey)
+              ?.value ||
+            variables?.[orgId]?.find((variable) => variable.key === variableKey)
+              ?.value ||
+            "";
 
-            const lowerCasedVariableKey =
-              variableKey.charAt(0).toLocaleLowerCase() + variableKey.slice(1);
-            variablesObj[lowerCasedVariableKey] = foundVariable;
-          });
-          return variablesObj;
-        }
-      );
-      return parsedLocations;
+          const lowerCasedVariableKey =
+            variableKey.charAt(0).toLocaleLowerCase() + variableKey.slice(1);
+
+          acc[lowerCasedVariableKey as VariableKey] = foundVariable;
+
+          return acc;
+        }, {} as LocationVariables);
+        return {
+          ...variablesOject,
+          id,
+          orgId,
+        };
+      });
+
+      return assembledLocations;
     },
     // set locations as dependent on variables
     enabled: !!variables,
@@ -122,7 +125,6 @@ function LocationsAndVariables() {
   }, [isSuccess, locations, setLocationState]);
 
   const handleSetLocationState = (id: number) => {
-    console.log(id, "id setlocation");
     if (!locationState) return;
 
     const newLocationState = locationState.map((location) =>
@@ -147,8 +149,6 @@ function LocationsAndVariables() {
    * grab value of key to display
    *
    * if ("locationId" in variable), overrides org-level variable, else inherits org-level variable
-   *
-   * consider how to make this modular / flexible
    *  */
 
   // todo: flesh out error state
