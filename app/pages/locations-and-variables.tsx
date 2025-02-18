@@ -81,7 +81,16 @@ function LocationsAndVariables() {
             { address, brandName, id, name, phoneNumber, storeHours },
             index
           ) => (
-            <Card key={id}>
+            <Card
+              key={id}
+              isOpen={locationState && locationState[index]?.isShowingVariables}
+              hiddenContent={
+                <div className="mt-2">
+                  <p>{storeHours}</p>
+                  <p>{brandName}</p>
+                </div>
+              }
+            >
               <div>
                 <h2 className="font-poppins font-semibold">{name}</h2>
                 <p>{address}</p>
@@ -96,13 +105,6 @@ function LocationsAndVariables() {
                       : "Show"}{" "}
                     Variables
                   </Button>
-                  {locationState &&
-                    locationState[index]?.isShowingVariables && (
-                      <div className="mt-2 grid auto-cols-auto">
-                        <p>{storeHours}</p>
-                        <p>{brandName}</p>
-                      </div>
-                    )}
                 </div>
               </div>
             </Card>
