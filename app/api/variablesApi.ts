@@ -6,6 +6,8 @@ export interface Variable {
   value: string;
 }
 
+export type GroupedVariables = Partial<Record<number, Variable[]>>;
+
 export const fetchVariables = async () => {
   const variableRes = await fetch(
     `${import.meta.env.VITE_SWIVL_BASE_URL}/variables`

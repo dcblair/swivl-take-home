@@ -1,4 +1,5 @@
-import { Variable } from "./variablesApi";
+import { findVariable, lowercaseFirstLetter } from "@/utils/locationsHelpers";
+import { GroupedVariables } from "./variablesApi";
 
 export interface Location {
   id: number;
@@ -25,10 +26,7 @@ const variableKeys = [
   "StoreHours",
 ];
 
-// Partial<Record<number, Variable[]>> is the return type for groupedVariables
-export const fetchLocations = async (
-  variables: Partial<Record<number, Variable[]>>
-) => {
+export const fetchLocations = async (variables: GroupedVariables) => {
   const locationsRes = await fetch(
     `${import.meta.env.VITE_SWIVL_BASE_URL}/locations`
   );
@@ -40,24 +38,16 @@ export const fetchLocations = async (
   const locations: Location[] = await locationsRes.json();
 
   const assembledLocations = locations?.map(({ id, orgId }) => {
-    const variablesOject = variableKeys?.reduce((acc, variableKey) => {
+    const variablesObject = variableKeys?.reduce((acc, variableKey) => {
       // look for variable based on location id first, if not found, find based on orgId
-      const foundVariable =
-        variables?.[id]?.find((variable) => variable.key === variableKey)
-          ?.value ||
-        variables?.[orgId]?.find((variable) => variable.key === variableKey)
-          ?.value ||
-        "";
+      const foundVariable = findVariable(variableKey, variables, id, orgId);
 
-      const lowerCasedVariableKey =
-        variableKey.charAt(0).toLocaleLowerCase() + variableKey.slice(1);
-
-      acc[lowerCasedVariableKey as VariableKey] = foundVariable;
+      acc[lowercaseFirstLetter(variableKey) as VariableKey] = foundVariable;
 
       return acc;
     }, {} as LocationVariables);
     return {
-      ...variablesOject,
+      ...variablesObject,
       id,
       orgId,
     };
