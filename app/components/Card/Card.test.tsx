@@ -11,4 +11,11 @@ describe("Card", () => {
 
     expect(card).toBeInTheDocument();
   });
+
+  test("renders a Card with a loading spinner inside", () => {
+    render(<Card loading />);
+
+    const spinner = screen.getByRole("status");
+    expect(spinner).toBeVisible();
+  });
 });
