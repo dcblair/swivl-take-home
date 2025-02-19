@@ -41,7 +41,7 @@ STH leverages [React Router](https://reactrouter.com/start/library/routing) for 
 
 ## Areas of Improvement
 
-- CI/CD pipeline and pre-commit hook
+- Configure CI/CD pipeline and pre-commit hook
 - Integrate e2e testing using Playwright, Cypress, or another e2e framework
 - Leverage Storybook for component documentation and testing
 - Write tests for API logic, using MSW
