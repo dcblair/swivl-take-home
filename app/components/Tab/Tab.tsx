@@ -18,7 +18,7 @@ const BaseTab = ({ classNames = "", children, ...rest }: TabProps) => {
         filterClasses(
           "text-black tracking-wide text-center text-xl p-2.5 transition-colors outline-0 outline-orange-500 ease-in-out rounded-lg",
           isActive
-            ? "bg-orange-150 text-orange-500 font-semibold transition-all duration-500"
+            ? "bg-orange-150 text-orange-500 [text-shadow:_0_0.7px_0_var(--color-orange-500)] transition-all duration-500"
             : "duration-300",
           "focus-visible:outline-2",
           "hover:text-orange-600",
