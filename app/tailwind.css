@@ -14,6 +14,7 @@
 
   --animate-fadeIn: fadeIn 1s ease-in-out;
   --animate-fadeOut: fadeOut 0.5s ease-out;
+  --animate-spinFaster: spin 0.9s linear infinite;
 
   @keyframes fadeIn {
     0% {

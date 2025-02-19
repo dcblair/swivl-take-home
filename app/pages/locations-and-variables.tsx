@@ -57,22 +57,28 @@ function LocationsAndVariables() {
     setLocationState(newLocationState);
   };
 
-  // todo: flesh out error state
   if (locationsError || variablesError) {
     return (
       <div className="flex flex-col items-center pt-28">
-        <p className="text-lg">Something went wrong. </p>
-        <Button variant="link" onClick={() => navigate(0)}>
-          Click here to refresh.
-        </Button>
+        <div>
+          <div className="mb-2.5">
+            <h2 className="text-2xl font-poppins text-orange-600">Oops</h2>
+          </div>
+          <p>Something went wrong. </p>
+          <Button variant="link" onClick={() => navigate(0)}>
+            Click here to refresh.
+          </Button>
+        </div>
       </div>
     );
   }
 
+  if (areLocationsLoading || areVariablesLoading) {
+    return <Card loading />;
+  }
+
   return (
     <div className="flex flex-col space-y-6">
-      {/* todo: flesh out loading state */}
-      {areLocationsLoading || (areVariablesLoading && "loading")}
       {Array.isArray(locations) &&
         locations.map(
           (

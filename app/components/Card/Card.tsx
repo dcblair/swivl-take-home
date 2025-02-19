@@ -1,13 +1,16 @@
 import { filterClasses } from "@/utils/filterClasses";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, type ReactNode } from "react";
 
 type Outlets = "wrapper" | "hiddenContent";
 
 interface CardProps {
-  children: ReactNode;
+  children?: ReactNode;
+  classNames?: Partial<Record<Outlets, string>>;
   hiddenContent?: ReactNode;
   isOpen?: boolean;
-  classNames?: Partial<Record<Outlets, string>>;
+  loading?: boolean;
 }
 
 const BaseCard = ({
@@ -15,6 +18,7 @@ const BaseCard = ({
   children,
   hiddenContent = null,
   isOpen = false,
+  loading = false,
 }: CardProps) => {
   const internalClassNames = {
     cardWrapper: filterClasses(
@@ -29,6 +33,14 @@ const BaseCard = ({
   };
   return (
     <div className={internalClassNames.cardWrapper}>
+      {loading && (
+        <FontAwesomeIcon
+          className="my-4 animate-spinFaster"
+          color="oklch(0.65 0.21 37.7)"
+          icon={faSpinner}
+          size="2xl"
+        />
+      )}
       {children}
       {hiddenContent && (
         <div className={internalClassNames.hiddentContent}>{hiddenContent}</div>
