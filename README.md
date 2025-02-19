@@ -1,6 +1,6 @@
 # Swivl Take Home
 
-Thank you for visiting my take home assignment.
+Thank you for taking a look at my take home assignment!
 
 ## Setup and Development
 
@@ -11,28 +11,40 @@ After cloning the repo, make sure to install packages:
 npm install
 ```
 
-After installing dependencies, run STH locally:
+Ensure environment variables are set in a `.env`. Refer to `.env.example`.
+
+After installing dependencies and setting up environment variables, run STH locally:
 
 ```sh
 npm run dev
 ```
 
-Ensure env vars are set in a `.env`. Refer to `.env.example`.
+## Testing
+
+STH uses vitest to handle unit tests.
+To run tests:
+
+```sh
+npm run test
+```
 
 ## Features
 
-### Data fetching
+### Data fetching / Store
 
-React Query with the fetch API are being used for data fetching.
+[React Query](https://tanstack.com/query/latest/docs/framework/react/overview) and the native fetch API are being used for data fetching, caching, and server state management.
+Global client state is handled using [zustand](https://zustand.docs.pmnd.rs/getting-started/introduction).
 
 ### Routing
 
-STH leverages React Router for routing.
-
-### Data fetching and state management
-
-### Testing
+STH leverages [React Router](https://reactrouter.com/start/library/routing) for routing.
 
 ## Areas of Improvement
 
-<!-- TODO: FILL this out -->
+- Integrate e2e testing using Playwright, Cypress, or another e2e framework
+- Leverage Storybook for component documentation and testing
+- Write tests for API logic, using MSW
+- Write more edge-case tests
+- Improve app responsiveness (Create mobile Tabs, Tab)
+- Upgrade flexibility of components
+- Set up devtools for React Query and zustand

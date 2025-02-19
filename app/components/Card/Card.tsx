@@ -35,9 +35,12 @@ const BaseCard = ({
     <div className={internalClassNames.cardWrapper}>
       {loading && (
         <FontAwesomeIcon
+          aria-hidden="false"
+          aria-label="Content loading"
           className="my-4 animate-spinFaster"
           color="oklch(0.65 0.21 37.7)"
           icon={faSpinner}
+          role="status"
           size="2xl"
         />
       )}
