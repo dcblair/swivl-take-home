@@ -1,4 +1,8 @@
-import { findVariable, lowercaseFirstLetter } from "@/utils/locationsHelpers";
+import {
+  findVariable,
+  formatPhoneNumber,
+  lowercaseFirstLetter,
+} from "@/utils/locationsHelpers";
 import { GroupedVariables } from "./variablesApi";
 
 export interface Location {
@@ -42,7 +46,13 @@ export const fetchLocations = async (variables: GroupedVariables) => {
       // look for variable based on location id first, if not found, find based on orgId
       const foundVariable = findVariable(variableKey, variables, id, orgId);
 
-      acc[lowercaseFirstLetter(variableKey) as VariableKey] = foundVariable;
+      if (variableKey === "PhoneNumber") {
+        const formattedNumber = formatPhoneNumber(foundVariable);
+
+        acc["phoneNumber"] = formattedNumber;
+      } else {
+        acc[lowercaseFirstLetter(variableKey) as VariableKey] = foundVariable;
+      }
 
       return acc;
     }, {} as LocationVariables);
