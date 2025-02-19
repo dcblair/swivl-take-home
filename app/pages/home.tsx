@@ -13,7 +13,9 @@ function Home() {
 
   return (
     <div className="size-full flex flex-col">
-      <Tabs aria-label="navigation" tabs={tabs} />
+      <header>
+        <Tabs aria-label="navigation" tabs={tabs} />
+      </header>
       <div className="py-8 px-6">
         <Outlet />
       </div>

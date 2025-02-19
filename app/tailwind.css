@@ -16,6 +16,8 @@
   --animate-fadeOut: fadeOut 0.5s ease-out;
   --animate-spinFaster: spin 0.9s linear infinite;
 
+  --text-ml: 1.05rem;
+
   @keyframes fadeIn {
     0% {
       opacity: 0%;
