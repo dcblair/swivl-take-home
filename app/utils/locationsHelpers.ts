@@ -16,3 +16,16 @@ export const findVariable = (
     ""
   );
 };
+
+// (000) 000-0000 => 000-000-0000
+export const formatPhoneNumber = (phoneNumber: string) => {
+  let parenCount = 0;
+
+  // i imagine i could tailor the regex a bit to avoid the double replace
+  return phoneNumber
+    .replace(/[()]/g, function () {
+      parenCount++;
+      return parenCount === 2 ? "-" : "";
+    })
+    .replace(" ", "");
+};

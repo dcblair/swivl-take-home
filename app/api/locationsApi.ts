@@ -1,4 +1,8 @@
-import { findVariable, lowercaseFirstLetter } from "@/utils/locationsHelpers";
+import {
+  findVariable,
+  formatPhoneNumber,
+  lowercaseFirstLetter,
+} from "@/utils/locationsHelpers";
 import { GroupedVariables } from "./variablesApi";
 
 export interface Location {
@@ -43,14 +47,7 @@ export const fetchLocations = async (variables: GroupedVariables) => {
       const foundVariable = findVariable(variableKey, variables, id, orgId);
 
       if (variableKey === "PhoneNumber") {
-        let parenCount = 0;
-        const formattedNumber = foundVariable
-          // i imagine i could tailor the regex a bit to avoid the double replace
-          .replace(/[()]/g, function () {
-            parenCount++;
-            return parenCount === 2 ? "-" : "";
-          })
-          .replace(" ", "");
+        const formattedNumber = formatPhoneNumber(foundVariable);
 
         acc["phoneNumber"] = formattedNumber;
       } else {
