@@ -57,53 +57,57 @@ function LocationsAndVariables() {
     setLocationState(newLocationState);
   };
 
-  // todo: flesh out error state
   if (locationsError || variablesError) {
     return (
-      <div>
-        <p>
-          Something went wrong.{" "}
+      <div className="flex flex-col items-center pt-28">
+        <div>
+          <div className="mb-2.5">
+            <h2 className="text-2xl font-poppins text-orange-600">Oops</h2>
+          </div>
+          <p>Something went wrong. </p>
           <Button variant="link" onClick={() => navigate(0)}>
             Click here to refresh.
           </Button>
-        </p>
+        </div>
       </div>
     );
   }
 
+  if (areLocationsLoading || areVariablesLoading) {
+    return <Card loading />;
+  }
+
   return (
     <div className="flex flex-col space-y-6">
-      {/* todo: flesh out loading state */}
-      {areLocationsLoading || (areVariablesLoading && "loading")}
       {Array.isArray(locations) &&
         locations.map(
           (
             { address, brandName, id, name, phoneNumber, storeHours },
             index
           ) => (
-            <Card key={id}>
+            <Card
+              key={id}
+              isOpen={locationState && locationState[index]?.isShowingVariables}
+              hiddenContent={
+                <div className="mt-2">
+                  <p>Store Hours: {storeHours}</p>
+                  <p>Brand Name: {brandName}</p>
+                </div>
+              }
+            >
               <div>
                 <h2 className="font-poppins font-semibold">{name}</h2>
                 <p>{address}</p>
                 <p>{phoneNumber}</p>
-                <div className="mt-1">
-                  <Button
-                    onClick={() => handleSetLocationState(id)}
-                    variant="link"
-                  >
-                    {locationState && locationState[index]?.isShowingVariables
-                      ? "Hide"
-                      : "Show"}{" "}
-                    Variables
-                  </Button>
-                  {locationState &&
-                    locationState[index]?.isShowingVariables && (
-                      <div className="mt-2 grid auto-cols-auto">
-                        <p>{storeHours}</p>
-                        <p>{brandName}</p>
-                      </div>
-                    )}
-                </div>
+                <Button
+                  onClick={() => handleSetLocationState(id)}
+                  variant="link"
+                >
+                  {locationState && locationState[index]?.isShowingVariables
+                    ? "Hide"
+                    : "Show"}{" "}
+                  Variables
+                </Button>
               </div>
             </Card>
           )

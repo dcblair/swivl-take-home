@@ -10,6 +10,11 @@ export const fetchVariables = async () => {
   const variableRes = await fetch(
     `${import.meta.env.VITE_SWIVL_BASE_URL}/variables`
   );
+
+  if (!variableRes.ok) {
+    throw new Error("Error fetching variables");
+  }
+
   const variables: Variable[] = await variableRes.json();
 
   // group variables by locationId || orgId
