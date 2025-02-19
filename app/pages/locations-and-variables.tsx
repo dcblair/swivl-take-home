@@ -78,7 +78,7 @@ function LocationsAndVariables() {
   }
 
   return (
-    <div className="flex flex-col space-y-6">
+    <main className="flex flex-col space-y-6">
       {Array.isArray(locations) &&
         locations.map(
           (
@@ -96,9 +96,9 @@ function LocationsAndVariables() {
               }
             >
               <div>
-                <h2 className="font-poppins font-semibold">{name}</h2>
-                <p>{address}</p>
-                <p>{phoneNumber}</p>
+                <h2 className="font-semibold text-lg leading-5">{name}</h2>
+                <p className="tracking-wide">{address}</p>
+                <p className="tracking-wide">{phoneNumber}</p>
                 <Button
                   onClick={() => handleSetLocationState(id)}
                   variant="link"
@@ -112,7 +112,7 @@ function LocationsAndVariables() {
             </Card>
           )
         )}
-    </div>
+    </main>
   );
 }
 

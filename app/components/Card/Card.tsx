@@ -22,11 +22,11 @@ const BaseCard = ({
 }: CardProps) => {
   const internalClassNames = {
     cardWrapper: filterClasses(
-      "shadow-md bg-white pt-4 pb-3 px-6 rounded-md w-full transition-all overflow-hidden ease-in-out duration-500",
-      isOpen ? "max-h-48" : "max-h-[8.5rem]",
+      "shadow-md bg-white p-6 rounded-md w-full transition-all overflow-hidden ease-in-out duration-500",
+      isOpen ? "max-h-48" : "max-h-[8.68rem]",
       classNames.wrapper
     ),
-    hiddentContent: filterClasses(
+    hiddenContent: filterClasses(
       isOpen ? "animate-fadeIn" : "animate-fadeOut",
       classNames.hiddenContent
     ),
@@ -43,7 +43,7 @@ const BaseCard = ({
       )}
       {children}
       {hiddenContent && (
-        <div className={internalClassNames.hiddentContent}>{hiddenContent}</div>
+        <div className={internalClassNames.hiddenContent}>{hiddenContent}</div>
       )}
     </div>
   );
