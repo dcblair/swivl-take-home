@@ -42,7 +42,20 @@ export const fetchLocations = async (variables: GroupedVariables) => {
       // look for variable based on location id first, if not found, find based on orgId
       const foundVariable = findVariable(variableKey, variables, id, orgId);
 
-      acc[lowercaseFirstLetter(variableKey) as VariableKey] = foundVariable;
+      if (variableKey === "PhoneNumber") {
+        let parenCount = 0;
+        const formattedNumber = foundVariable
+          // i imagine i could tailor the regex a bit to avoid the double replace
+          .replace(/[()]/g, function () {
+            parenCount++;
+            return parenCount === 2 ? "-" : "";
+          })
+          .replace(" ", "");
+
+        acc["phoneNumber"] = formattedNumber;
+      } else {
+        acc[lowercaseFirstLetter(variableKey) as VariableKey] = foundVariable;
+      }
 
       return acc;
     }, {} as LocationVariables);
