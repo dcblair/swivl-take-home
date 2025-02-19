@@ -23,7 +23,7 @@ const BaseCard = ({
   const internalClassNames = {
     cardWrapper: filterClasses(
       "shadow-md bg-white p-6 rounded-md w-full transition-all overflow-hidden ease-in-out duration-500",
-      isOpen ? "max-h-48" : "max-h-[8.68rem]",
+      isOpen ? "max-h-52" : "max-h-[8.68rem]",
       classNames.wrapper
     ),
     hiddenContent: filterClasses(
