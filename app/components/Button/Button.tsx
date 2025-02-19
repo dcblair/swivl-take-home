@@ -20,7 +20,7 @@ type Variant = keyof typeof variants;
 interface ButtonProps
   extends Pick<
     ComponentPropsWithoutRef<"button">,
-    "children" | "type" | "onClick"
+    "children" | "type" | "onClick" | "disabled"
   > {
   children: ReactNode;
   classNames?: string;
